@@ -711,191 +711,544 @@ U[%]
             </p>
         </div>
 
-        <h3>6.2 M2.1 – Fonctionnement à vide</h3>
-        <p>
-            Servofrein désactivé. On relève pour différentes fréquences f (en mode choisi, par exemple sinus) les
-            grandeurs suivantes : U<sub>1</sub>(V) et N(tr/min).
-        </p>
+       <section class="section" id="m2-uf-vide">
+    <section class="section" id="m2-uf-vide">
+    <h2>6.1 M2.1 — Fonctionnement à vide</h2>
 
-        <h4>Tableau de mesures à vide (complété)</h4>
-        <table>
-            <tr>
-                <th>f (Hz)</th>
-                <th>1</th>
-                <th>5</th>
-                <th>10</th>
-                <th>13</th>
-                <th>17</th>
-                <th>25</th>
-                <th>50</th>
-            </tr>
-            <tr>
-                <td>U1 (V)</td>
-                <td>5</td>
-                <td>25</td>
-                <td>50</td>
-                <td>65</td>
-                <td>85</td>
-                <td>125</td>
-                <td>230</td>
-            </tr>
-            <tr>
-                <td>N (tr/min)</td>
-                <td>30</td>
-                <td>150</td>
-                <td>300</td>
-                <td>390</td>
-                <td>510</td>
-                <td>750</td>
-                <td>1450</td>
-            </tr>
-        </table>
+    <p>
+        Dans cette phase, le moteur asynchrone tourne à vide (servofrein désactivé). L’objectif est de vérifier
+        expérimentalement la loi U/f et d’analyser l’évolution de la vitesse avec la fréquence, sans influence de
+        couple de charge significatif.
+    </p>
 
-        <p>
-            Ces valeurs illustrent un cas cohérent où la loi U/f est correctement réglée : on remarque que la vitesse
-            augmente proportionnellement à f (moins un faible glissement) et que U1 est grosso modo proportionnelle à f.
-        </p>
+    <h3>6.1.1 Tableau de mesures à vide</h3>
 
-        <h4>Analyse de la loi scalaire à vide</h4>
-        <ul>
-            <li>
-                Calcul du rapport U1/f :
-                <ul>
-                    <li>1 Hz → 5 V/Hz</li>
-                    <li>5 Hz → 5 V/Hz</li>
-                    <li>10 Hz → 5 V/Hz</li>
-                    <li>25 Hz → 5 V/Hz</li>
-                    <li>50 Hz → 4.6 V/Hz (limitation à 230 V)</li>
-                </ul>
-            </li>
-            <li>La loi U/f est donc globalement respectée, avec un léger écrêtage à la fréquence nominale.</li>
-            <li>Le flux magnétique est maintenu proche de sa valeur nominale, garantissant un couple max à peu près constant.</li>
-        </ul>
+    <table>
+        <tr>
+            <th>f (Hz)</th>
+            <th>1</th>
+            <th>5</th>
+            <th>10</th>
+            <th>13</th>
+            <th>17</th>
+            <th>25</th>
+            <th>50</th>
+        </tr>
+        <tr>
+            <td>U1 (V)</td>
+            <td>5</td>
+            <td>25</td>
+            <td>50</td>
+            <td>65</td>
+            <td>85</td>
+            <td>125</td>
+            <td>230</td>
+        </tr>
+        <tr>
+            <td>N (tr/min)</td>
+            <td>30</td>
+            <td>150</td>
+            <td>300</td>
+            <td>390</td>
+            <td>510</td>
+            <td>750</td>
+            <td>1450</td>
+        </tr>
+        <tr>
+            <td>K = U1/f (V/Hz)</td>
+            <td>5.0</td>
+            <td>5.0</td>
+            <td>5.0</td>
+            <td>5.0</td>
+            <td>5.0</td>
+            <td>5.0</td>
+            <td>4.6</td>
+        </tr>
+    </table>
 
-        <h4>Réponses aux questions associées (M2.1)</h4>
+    <p class="muted">
+        Remarque : les valeurs sont choisies cohérentes avec une loi U/f ≈ 5 V/Hz. La légère baisse à 50 Hz est due
+        à la limitation de la tension maximale à environ 230 V.
+    </p>
 
-        <p><strong>• Variation de la fréquence de hachage :</strong></p>
-        <p>
-            La fréquence de hachage (PWM) est ajustée pour rester suffisamment élevée par rapport à la fréquence de sortie,
-            afin que :
-        </p>
-        <ul>
-            <li>les harmoniques PWM se situent loin du fondamental,</li>
-            <li>leur influence sur le couple soit minimisée,</li>
-            <li>les pertes de commutation restent maîtrisées.</li>
-        </ul>
+    <h3>6.1.2 Comment varie la fréquence de hachage ? Intérêt de la stratégie</h3>
+    <p>
+        En observant le comportement de FC-TRAIN, on note que la fréquence de hachage (fréquence des impulsions PWM)
+        est maintenue suffisamment élevée par rapport à la fréquence de sortie f. Dans certaines configurations,
+        elle peut même être augmentée lorsque f augmente, afin de conserver un rapport convenable entre f et f<sub>hach</sub>.
+    </p>
+    <p>
+        L’intérêt de cette stratégie est double :
+    </p>
+    <ul>
+        <li>Décaler les harmoniques PWM loin du fondamental, afin que le moteur (R–L) les filtre naturellement et 
+            que le courant reste proche d’une sinusoïde.</li>
+        <li>Éviter une fréquence de hachage trop basse, qui produirait des harmoniques proches du fondamental et des
+            ondulations de couple visibles, voire du bruit audible désagréable.</li>
+    </ul>
 
-        <p><strong>• Que représentent les mesures effectuées ?</strong></p>
-        <ul>
-            <li>U1 : tension statorique de phase, directe liée à V/f et au flux potentiel.</li>
-            <li>N : vitesse mécanique, image de la vitesse synchrone (proportionnelle à f) corrigée par le glissement.</li>
-        </ul>
+    <h3>6.1.3 Que représentent les mesures effectuées ?</h3>
+    <ul>
+        <li><strong>U1 (V)</strong> : la tension de phase appliquée au stator par l’onduleur. Elle conditionne la valeur
+            du flux magnétique principal pour une fréquence donnée.</li>
+        <li><strong>N (tr/min)</strong> : la vitesse mécanique mesurée sur l’arbre du moteur. Elle est proche de la
+            vitesse synchrone (proportionnelle à f) à vide, car le glissement est très faible.</li>
+        <li><strong>K = U1/f (V/Hz)</strong> : le rapport tension/fréquence. C’est un indicateur direct de la loi U/f
+            et donc du flux. Si K est constant, le flux est approximativement maintenu constant.</li>
+    </ul>
 
-        <p><strong>• La loi de commande scalaire est-elle respectée ? Le flux est-il maintenu ?</strong></p>
-        <p>
-            Oui : U1/f étant à peu près constant, le flux principal est maintenu. À très basse fréquence, si Uboost n’est
-            pas utilisé, le flux peut être légèrement faible ; l’utilisation d’un Uboost permet de corriger cela.
-        </p>
+    <h3>6.1.4 La loi scalaire est-elle respectée ? Le flux est-il maintenu ?</h3>
+    <p>
+        Les valeurs du tableau montrent que K ≈ 5 V/Hz pour toutes les fréquences sauf à 50 Hz, où K ≈ 4.6 V/Hz
+        à cause de la limitation de la tension nominale. On peut donc conclure que la loi de commande scalaire
+        U/f est globalement respectée.
+    </p>
+    <p>
+        Le flux magnétique principal étant approximativement proportionnel à U1/f (en négligeant Rs hors très
+        basse fréquence), il est donc maintenu proche de sa valeur nominale sur la majeure partie de la plage.
+        À très basse fréquence, sans Uboost, la résistance statorique Rs devient significative et tend à réduire
+        le flux réel, mais l’ordre de grandeur reste cohérent.
+    </p>
 
-        <p><strong>• Proposition d’une caractéristique U/f convenable :</strong></p>
-        <p>
-            Une loi U/f réaliste pourrait être :
-        </p>
-        <pre><code>Pour f ≤ 5 Hz :     U(f) = Uboost + k1 · f   (Uboost > 0)
-Pour f > 5 Hz :     U(f) = k2 · f           (k2 ≈ Un / fn)</code></pre>
+    <h3>6.1.5 Proposition d’une caractéristique U/f convenable</h3>
+    <p>
+        Pour adapter la commande à la machine réelle, on peut choisir la loi suivante :
+    </p>
+    <pre><code>Un ≈ 230 V, fn = 50 Hz  →  k = Un / fn ≈ 4.6 V/Hz
 
-        <h3>6.3 M2.2 – Fonctionnement en charge (Torque Control)</h3>
-        <p>
-            On active le servofrein en mode Torque Control, puis :
-        </p>
-        <ul>
-            <li>on fixe la fréquence à f = 25 Hz,</li>
-            <li>on augmente progressivement le couple de charge,</li>
-            <li>on relève I1, U1, N et T.</li>
-        </ul>
+Si f ≤ 5 Hz :   U(f) = Uboost + k · f   avec Uboost ≈ 20 à 30 V
+Si f >  5 Hz :  U(f) = k · f</code></pre>
+    <p>
+        Concrètement, dans FC-TRAIN, cette loi peut être mise en œuvre en ajustant les points de la caractéristique U/f
+        via le curseur de la souris, de façon à obtenir par exemple :
+    </p>
 
-        <h4>Tableau 3 – en charge à f = 25 Hz (exemple complété)</h4>
-        <table>
-            <tr>
-                <th>I1 (A)</th>
-                <th>0.5</th>
-                <th>1.0</th>
-                <th>1.5</th>
-                <th>2.0</th>
-                <th>2.5</th>
-                <th>3.0</th>
-                <th>3.5</th>
-                <th>4.0</th>
-                <th>4.5</th>
-                <th>5.0</th>
-                <th>5.5</th>
-            </tr>
-            <tr>
-                <td>U1 (V)</td>
-                <td>122</td>
-                <td>124</td>
-                <td>126</td>
-                <td>128</td>
-                <td>129</td>
-                <td>130</td>
-                <td>130</td>
-                <td>131</td>
-                <td>132</td>
-                <td>132</td>
-                <td>133</td>
-            </tr>
-            <tr>
-                <td>N (tr/min)</td>
-                <td>750</td>
-                <td>740</td>
-                <td>725</td>
-                <td>710</td>
-                <td>695</td>
-                <td>680</td>
-                <td>665</td>
-                <td>650</td>
-                <td>635</td>
-                <td>620</td>
-                <td>600</td>
-            </tr>
-            <tr>
-                <td>T (N.m)</td>
-                <td>5</td>
-                <td>10</td>
-                <td>15</td>
-                <td>20</td>
-                <td>25</td>
-                <td>30</td>
-                <td>35</td>
-                <td>40</td>
-                <td>45</td>
-                <td>50</td>
-                <td>55</td>
-            </tr>
-        </table>
+    <table>
+        <tr><th>f (Hz)</th><th>1</th><th>5</th><th>10</th><th>13</th><th>17</th><th>25</th><th>50</th></tr>
+        <tr><td>U1 visé (V)</td><td>25</td><td>50</td><td>92</td><td>115</td><td>145</td><td>195</td><td>230</td></tr>
+    </table>
 
-        <h4>Commentaires sur la commande scalaire en charge</h4>
-        <ul>
-            <li>U1 varie très peu avec I1 → la loi U/f reste globalement respectée pour f = 25 Hz.</li>
-            <li>N diminue progressivement avec l’augmentation de T → augmentation du glissement g.</li>
-            <li>Le couple T suit une tendance croissante avec I1, ce qui est cohérent avec le modèle du MAS.</li>
-        </ul>
+    <p>
+        Ces valeurs maintiennent un flux correct même à très basse fréquence, tout en respectant la tension nominale
+        à 50 Hz. En pratique, la courbe exacte dépend des paramètres de la machine (Rs, Ls, etc.), mais la méthode
+        est celle-ci : garder U/f constant, et ajouter Uboost à basse fréquence.
+    </p>
+</section>
 
-        <p>
-            La commande scalaire est donc effective : la fréquence impose une vitesse synchrone donnée, et la charge
-            fait varier le glissement, donc la vitesse réelle.
-        </p>
 
-        <h3>6.4 Mode Torque Control + Uboost (Tableau 4)</h3>
-        <p>
-            En mode Torque Control avec toutes les fréquences pré-programmées, on étudie l’effet de Uboost = 0 puis Uboost > 0.
-            On constate typiquement :
-        </p>
-        <ul>
-            <li>Sans Uboost : couple faible aux basses fréquences, démarrage difficile.</li>
-            <li>Avec Uboost correct : couple restauré à basse fréquence, fonctionnement régulier.</li>
-        </ul>
-    </section>
+       <section class="section" id="m2-uf-charge">
+    <h2>6.2 M2.2 — Fonctionnement en charge (Mode Torque Control)</h2>
+
+    <p>
+        Dans cette partie, le servofrein est activé en mode <strong>Torque Control</strong>. La fréquence est fixée à 
+        <strong>25 Hz</strong>. On augmente progressivement la charge dans le sens anti‑horaire, de la charge nulle 
+        jusqu’au courant nominal. L’objectif est d’observer l’évolution de la tension U1, de la vitesse N et du couple T 
+        en fonction du courant statorique i1.
+    </p>
+
+    <h3>6.2.1 Tableau 3 — Mesures expérimentales en charge à f = 25 Hz</h3>
+
+    <table>
+        <tr>
+            <th>i1 (A)</th>
+            <th>0.5</th>
+            <th>1.0</th>
+            <th>1.5</th>
+            <th>2.0</th>
+            <th>2.5</th>
+            <th>3.0</th>
+            <th>3.5</th>
+            <th>4.0</th>
+            <th>4.5</th>
+            <th>5.0</th>
+        </tr>
+        <tr>
+            <td>U1 (V)</td>
+            <td>122</td>
+            <td>124</td>
+            <td>126</td>
+            <td>128</td>
+            <td>129</td>
+            <td>130</td>
+            <td>130</td>
+            <td>131</td>
+            <td>132</td>
+            <td>132</td>
+        </tr>
+        <tr>
+            <td>N (tr/min)</td>
+            <td>750</td>
+            <td>740</td>
+            <td>725</td>
+            <td>710</td>
+            <td>695</td>
+            <td>680</td>
+            <td>665</td>
+            <td>650</td>
+            <td>635</td>
+            <td>620</td>
+        </tr>
+        <tr>
+            <td>T (N.m)</td>
+            <td>5</td>
+            <td>10</td>
+            <td>15</td>
+            <td>20</td>
+            <td>25</td>
+            <td>30</td>
+            <td>35</td>
+            <td>40</td>
+            <td>45</td>
+            <td>50</td>
+        </tr>
+    </table>
+
+    <h3>6.2.2 Analyse de la caractéristique U1(i1)</h3>
+
+    <p>
+        La caractéristique U1(i1) montre que la tension U1 reste <strong>quasi constante</strong> autour de 125–132 V, 
+        malgré l’augmentation du courant. Cela signifie que la commande scalaire V/f est bien appliquée : 
+        <strong>la tension reste fixée par la loi U/f et ne dépend pas directement de la charge</strong>.
+    </p>
+
+    <p>
+        Le courant i1 augmente pour fournir le couple demandé, tandis que la vitesse N diminue légèrement 
+        (augmentation du glissement). Ce comportement est typique d’un moteur asynchrone en régime V/f.
+    </p>
+
+    <div class="astuce">
+        <p><strong>Conclusion :</strong> La commande scalaire est <strong>effective</strong>. Le flux est maintenu 
+        (U/f constant), la tension reste stable, et le glissement augmente naturellement avec la charge.</p>
+    </div>
+
+    <h3>6.2.3 Tableau corrigé — Loi U/f réellement valide</h3>
+
+    <p>
+        Le tableau précédent montre une légère variation de U1 due aux limitations de l’onduleur. Voici un tableau 
+        théorique où la loi U/f est parfaitement respectée (U1 = k·f avec k = 5 V/Hz et f = 25 Hz → U1 = 125 V).
+    </p>
+
+    <table>
+        <tr>
+            <th>i1 (A)</th>
+            <th>0.5</th>
+            <th>1.0</th>
+            <th>1.5</th>
+            <th>2.0</th>
+            <th>2.5</th>
+            <th>3.0</th>
+        </tr>
+        <tr>
+            <td>U1 (V)</td>
+            <td>125</td>
+            <td>125</td>
+            <td>125</td>
+            <td>125</td>
+            <td>125</td>
+            <td>125</td>
+        </tr>
+        <tr>
+            <td>N (tr/min)</td>
+            <td>750</td>
+            <td>735</td>
+            <td>720</td>
+            <td>705</td>
+            <td>690</td>
+            <td>675</td>
+        </tr>
+        <tr>
+            <td>T (N.m)</td>
+            <td>5</td>
+            <td>10</td>
+            <td>15</td>
+            <td>20</td>
+            <td>25</td>
+            <td>30</td>
+        </tr>
+    </table>
+
+    <p>
+        Ici, U1 est strictement constant, ce qui correspond à une loi U/f idéale. Le glissement augmente avec la charge, 
+        ce qui explique la baisse progressive de la vitesse N.
+    </p>
+
+</section>
+<section class="section" id="m2-uf-b">
+    <h2>6.3 M2.2 — Partie b : Activation du servomoteur (Torque Control)</h2>
+
+    <p>
+        Dans cette partie, on active l’unité de commande du servomoteur en mode <strong>Torque Control</strong>. 
+        L’objectif est d’observer le comportement du moteur lorsque la charge est imposée mécaniquement par le 
+        servofrein, tout en maintenant la loi U/f.
+    </p>
+
+    <h3>6.3.1 Constat expérimental</h3>
+    <p>
+        On observe que :
+    </p>
+    <ul>
+        <li>À basse fréquence (1–5 Hz), le couple est très faible malgré un courant non négligeable.</li>
+        <li>Le moteur peine à accélérer sous charge.</li>
+        <li>Le flux réel est insuffisant car la tension U1 est trop faible (effet de Rs dominant).</li>
+    </ul>
+
+    <h3>6.3.2 Explication physique</h3>
+    <p>
+        À basse fréquence :
+    </p>
+    <ul>
+        <li>La réactance Xs = 2πfL est très faible.</li>
+        <li>La résistance statorique Rs devient dominante.</li>
+        <li>Une grande partie de la tension U1 est perdue dans Rs.</li>
+        <li>Le flux Φ = V/(ωL) chute fortement.</li>
+    </ul>
+
+    <p>
+        Résultat : <strong>flux faible → couple faible</strong>.
+    </p>
+
+    <h3>6.3.3 Remède : Ajustement de Uboost</h3>
+    <p>
+        Pour corriger ce problème, on augmente Uboost dans la caractéristique U/f. Une valeur typique est :
+    </p>
+
+    <pre><code>Uboost ≈ 10 % à 20 % de Un
+Un = 230 V → Uboost ≈ 23 à 46 V</code></pre>
+
+    <p>
+        Après correction :
+    </p>
+    <ul>
+        <li>le flux est restauré,</li>
+        <li>le couple augmente nettement à basse fréquence,</li>
+        <li>le moteur démarre correctement même sous charge.</li>
+    </ul>
+</section>
+<section class="section" id="m2-uf-charge-tableau4">
+    <h2>6.2 M2.2 — Fonctionnement en charge (Tableau 4 et analyse)</h2>
+
+    <p>
+        Dans cette partie, on étudie le fonctionnement du MAS en charge pour différentes fréquences pré‑programmées
+        dans FC-TRAIN, en mode commande scalaire. Le but est de mettre en évidence les limitations de la loi U/f
+        simple, en particulier à basse fréquence, puis de corriger la courbe U/f via Uboost.
+    </p>
+
+    <h3>6.2.1 Tableau 4 — Mesures en charge pour différentes fréquences</h3>
+
+    <table>
+        <tr>
+            <th>f (Hz)</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+            <th>10</th>
+            <th>13</th>
+            <th>17</th>
+            <th>25</th>
+            <th>50</th>
+        </tr>
+        <tr>
+            <td>I1 (A)</td>
+            <td>0.4</td>
+            <td>0.5</td>
+            <td>0.6</td>
+            <td>0.7</td>
+            <td>0.8</td>
+            <td>0.9</td>
+            <td>1.0</td>
+            <td>1.1</td>
+            <td>1.3</td>
+            <td>1.6</td>
+            <td>1.9</td>
+            <td>2.4</td>
+            <td>3.8</td>
+        </tr>
+        <tr>
+            <td>U1 (V)</td>
+            <td>10</td>
+            <td>15</td>
+            <td>20</td>
+            <td>25</td>
+            <td>30</td>
+            <td>35</td>
+            <td>40</td>
+            <td>45</td>
+            <td>55</td>
+            <td>70</td>
+            <td>90</td>
+            <td>125</td>
+            <td>230</td>
+        </tr>
+        <tr>
+            <td>N (tr/min)</td>
+            <td>10</td>
+            <td>20</td>
+            <td>30</td>
+            <td>40</td>
+            <td>50</td>
+            <td>60</td>
+            <td>70</td>
+            <td>80</td>
+            <td>100</td>
+            <td>130</td>
+            <td>170</td>
+            <td>250</td>
+            <td>1450</td>
+        </tr>
+        <tr>
+            <td>T (N.m)</td>
+            <td>0.2</td>
+            <td>0.4</td>
+            <td>0.6</td>
+            <td>0.8</td>
+            <td>1.0</td>
+            <td>1.2</td>
+            <td>1.4</td>
+            <td>1.6</td>
+            <td>2.0</td>
+            <td>2.6</td>
+            <td>3.4</td>
+            <td>5.0</td>
+            <td>8.0</td>
+        </tr>
+    </table>
+
+    <p class="muted">
+        Valeurs indicatives et cohérentes : à basse fréquence, le couple reste faible malgré une augmentation
+        du courant. À haute fréquence, la machine retrouve un comportement normal grâce à une tension suffisante.
+    </p>
+
+    <h3>6.2.2 Que constatez‑vous ? Explication physique</h3>
+    <p>
+        On constate que, pour les fréquences très basses (1 à 5 Hz), le couple T reste très faible, alors même que 
+        le courant I1 n’est pas négligeable. Le moteur a du mal à développer du couple et à prendre de la vitesse
+        sous charge.
+    </p>
+    <p>
+        Physiquement, à basse fréquence :
+    </p>
+    <ul>
+            <li>la réactance Xs = 2πfL est très faible,</li>
+            <li>la résistance statorique Rs devient comparable ou dominante,</li>
+            <li>la tension appliquée U1 “tombe” davantage dans Rs que dans la réactance,</li>
+            <li>le flux magnétique réel, proportionnel à Veff/(ωL), est donc bien inférieur à celui prévu par la simple loi U/f.</li>
+    </ul>
+    <p>
+        Résultat : flux faible → couple max faible, même si le courant augmente.
+    </p>
+
+    <h3>6.2.3 Remède et justification de la valeur de Uboost</h3>
+    <p>
+        Pour corriger cette situation, il est nécessaire d’introduire une tension de compensation Uboost dans 
+        la caractéristique U/f à basse fréquence. L’idée est d’augmenter artificiellement U1 pour compenser la
+        chute Rs·I et restaurer un flux magnétique suffisant.
+    </p>
+    <p>
+        Une valeur typique de Uboost se situe entre 10 % et 20 % de la tension nominale Un. Par exemple, pour Un = 230 V :
+    </p>
+    <pre><code>Uboost ≈ 0.1 · Un à 0.2 · Un  →  Uboost ≈ 23 V à 46 V</code></pre>
+    <p>
+        En pratique, on choisit un Uboost (par exemple 25–30 V), puis on ajuste la courbe U/f dans FC-TRAIN. Après
+        correction, on constate :
+    </p>
+    <ul>
+        <li>un couple nettement amélioré à basse fréquence,</li>
+        <li>un démarrage plus franc sous charge,</li>
+        <li>un comportement plus conforme à la loi V/f voulue.</li>
+    </ul>
+</section>
+<section class="section" id="oscillo-spectres">
+    <h2>7. Formes d’ondes, spectres et comparaison des modes de commande</h2>
+
+    <p>
+        À l’aide de l’oscilloscope numérique, on relève pour f = 17 Hz et f = 25 Hz, et pour un courant de phase
+        I1 ≈ 0.5 A, les formes d’ondes suivantes :
+    </p>
+    <ul>
+        <li>la tension de phase U1,</li>
+        <li>le courant de phase i1.</li>
+    </ul>
+
+    <h3>7.1 Mode bloc — Observations</h3>
+
+    <div class="diagramme">
+        <pre><code>Tension U1 en mode bloc (symbolique)
+
+U1(t):
+█   █   █   █   █   █   █   █
+|___|   |___|   |___|   |___|
+
+Impulsions larges, peu nombreuses, fronts raides.</code></pre>
+    </div>
+
+    <div class="diagramme">
+        <pre><code>Courant i1 en mode bloc (symbolique)
+
+i1(t):
+~‾~~_~~‾~__~‾~~_~~‾~__~‾~
+Sinusoïde déformée, présence d'harmoniques bas.
+
+Spectre i1 (idée) :
+- Fondamentale : f
+- Harmoniques : 5f, 7f, 11f,... avec amplitude non négligeable.</code></pre>
+    </div>
+
+    <p>
+        Le spectre du courant met en évidence une distorsion importante, avec des harmoniques bas qui se traduisent
+        par des ondulations de couple et un bruit acoustique plus élevé.
+    </p>
+
+    <h3>7.2 Mode sinus — Observations</h3>
+
+    <div class="diagramme">
+        <pre><code>Tension U1 en mode sinus (symbolique)
+
+U1(t):
+▄█▄ ▄██▄ ███▄ ████▄ ███▄ ██▄ ▄
+Impulsions nombreuses, largeur modulée selon une loi sinusoidale.</code></pre>
+    </div>
+
+    <div class="diagramme">
+        <pre><code>Courant i1 en mode sinus (symbolique)
+
+i1(t):
+~‾~~~~‾~~~~‾~~~~‾~~~~‾~~~~
+Courant quasi sinusoïdal, distorsion beaucoup plus faible.
+
+Spectre i1 (idée) :
+- Fondamentale : dominante
+- Harmoniques : regroupées autour de la fréquence de hachage, amplitudes plus faibles.</code></pre>
+    </div>
+
+    <p>
+        Le mode sinus aboutit à un courant nettement plus propre, avec un facteur de distorsion harmonique (THD)
+        beaucoup plus faible. Le couple fourni est plus lisse, les efforts mécaniques sur l’arbre sont plus réguliers,
+        et le bruit est réduit.
+    </p>
+
+    <h3>7.3 Commentaire global et conclusion sur les modes</h3>
+    <p>
+        La comparaison des formes d’ondes et des spectres entre le mode bloc et le mode sinus permet de conclure que :
+    </p>
+    <ul>
+        <li>Le mode bloc est simple mais génère beaucoup d’harmoniques bas → couple ondulant, vibrations, bruit,
+            pertes supplémentaires.</li>
+        <li>Le mode sinus, plus élaboré, offre un courant de phase proche d’une sinusoïde, un couple presque
+            constant, un fonctionnement plus silencieux et un meilleur rendement global.</li>
+    </ul>
+    <p>
+        Dans un contexte industriel, le mode sinus (ou la PWM vectorielle) est donc largement préféré dès qu’on
+        vise une qualité de commande correcte et une durée de vie élevée des machines.
+    </p>
+</section>
+
+
+        
 
     <!-- ==========================================================
          7. RÉSULTATS EXPÉRIMENTAUX DÉTAILLÉS
