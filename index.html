@@ -2,103 +2,92 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>TP n°3 – Commande scalaire V/f d’un moteur asynchrone</title>
+    <title>TP3 – Commande Scalaire V/f d’un Moteur Asynchrone Triphasé</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Police -->
+    <!-- Police Google -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-gradient: radial-gradient(circle at top, #24124b 0, #050914 55%, #02030a 100%);
-            --accent-color: #9b5cff;
-            --accent-color-2: #00f0ff;
-            --text-color: #e5e9ff;
-            --muted-text: #9aa4d4;
-            --card-bg: rgba(8, 13, 33, 0.9);
+            --bg: #050812;
+            --bg-gradient: radial-gradient(circle at top, #24124b 0%, #050914 55%, #02030a 100%);
+            --card: rgba(9, 14, 35, 0.96);
+            --accent: #00e0ff;
+            --accent2: #9b5cff;
+            --text: #e8f0ff;
+            --muted: #9aa4d4;
+            --border: rgba(0, 240, 255, 0.25);
             --code-bg: #050816;
-            --header-bg-1: #001a33;
-            --header-bg-2: #000d1a;
-            --header-border: #00e0ff;
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
             background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-color);
+            color: var(--text);
             font-family: "Poppins", system-ui, sans-serif;
             line-height: 1.7;
         }
 
         main {
             max-width: 1200px;
-            margin: 2.5rem auto 3rem auto;
-            padding: 0 1.4rem;
+            margin: 2rem auto 3rem auto;
+            padding: 0 1.6rem;
         }
 
         .section {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 2rem 2.2rem;
-            margin-bottom: 2.8rem;
-            border: 1px solid rgba(155, 92, 255, 0.25);
-            box-shadow: 0 20px 45px rgba(0,0,0,0.75);
+            background: var(--card);
+            padding: 2.2rem 2.4rem;
+            margin-bottom: 2.6rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 55px rgba(0,0,0,0.75);
         }
 
         h1, h2, h3, h4 {
             margin-top: 0;
         }
 
-        h2 {
-            font-size: 1.45rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
+        h1 {
+            font-size: 1.8rem;
             text-transform: uppercase;
-            color: var(--accent-color-2);
+            letter-spacing: 0.12em;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
         }
 
         h3 {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 500;
-            margin-top: 1.6rem;
-            color: var(--accent-color);
+            margin-top: 1.8rem;
+            color: var(--accent2);
         }
 
         h4 {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 500;
-            margin-top: 1.2rem;
-            color: var(--accent-color-2);
+            margin-top: 1.4rem;
+            color: var(--accent);
         }
 
         p, li {
-            font-size: 0.97rem;
+            font-size: 0.96rem;
         }
 
-        ul, ol { padding-left: 1.4rem; }
-
-        .section-number {
-            color: var(--accent-color-2);
-            font-weight: 600;
-            margin-right: 0.4rem;
+        ul, ol {
+            padding-left: 1.5rem;
         }
-
-        .toc {
-            background: radial-gradient(circle at top left, rgba(155, 92, 255, 0.22), rgba(5, 9, 20, 0.95));
-            border-radius: 18px;
-            padding: 1.6rem 1.8rem;
-            border: 1px solid rgba(155, 92, 255, 0.45);
-        }
-
-        .toc a {
-            color: var(--accent-color-2);
-            text-decoration: none;
-        }
-
-        .toc a:hover { text-decoration: underline; }
 
         table {
             width: 100%;
@@ -110,48 +99,34 @@
         table th {
             background: rgba(0, 122, 204, 0.35);
             color: #bfeaff;
-            padding: 0.85rem;
+            padding: 0.8rem;
             text-align: left;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.4);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.6);
         }
 
         table td {
-            padding: 0.75rem;
+            padding: 0.7rem;
             border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
         table tr:nth-child(even) {
-            background: rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.02);
         }
 
         .astuce {
             background: rgba(0, 240, 255, 0.08);
-            border-left: 4px solid var(--accent-color-2);
-            padding: 1.1rem 1.3rem;
-            border-radius: 12px;
-            margin: 1.6rem 0;
-        }
-
-        pre {
-            background: var(--code-bg);
-            color: #eaeaea;
-            padding: 0.9rem 1rem;
-            border-radius: 10px;
-            overflow-x: auto;
-            font-size: 0.9rem;
-            border: 1px solid rgba(0, 240, 255, 0.28);
-        }
-
-        code {
-            font-family: Consolas, "Fira Code", "Courier New", monospace;
+            border-left: 4px solid var(--accent);
+            padding: 1.1rem 1.4rem;
+            border-radius: 13px;
+            margin: 1.8rem 0;
         }
 
         .diagramme {
-            background: rgba(5, 9, 20, 0.9);
+            background: rgba(5, 9, 20, 0.95);
             border-radius: 14px;
-            padding: 1.3rem 1.5rem;
-            border: 1px solid rgba(0, 240, 255, 0.4);
-            margin: 1.6rem 0;
+            padding: 1.2rem 1.4rem;
+            border: 1px solid rgba(0, 240, 255, 0.35);
+            margin: 1.5rem 0;
         }
 
         .diagramme pre {
@@ -160,7 +135,22 @@
             padding: 0;
             margin: 0;
             font-size: 0.9rem;
-            color: #cbe9ff;
+            color: #d3ebff;
+            overflow-x: auto;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: #eaeaea;
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid rgba(0, 240, 255, 0.28);
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-family: Consolas, "Fira Code", "Courier New", monospace;
         }
 
         .page-garde {
@@ -169,31 +159,36 @@
         }
 
         .page-garde h1 {
-            font-size: 1.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
             margin-bottom: 1rem;
         }
 
         .page-garde h2 {
+            margin-top: 0.4rem;
             font-size: 1.2rem;
             text-transform: none;
         }
 
-        .page-garde p {
-            font-size: 0.95rem;
+        .muted {
+            color: var(--muted);
+            font-size: 0.9rem;
         }
 
-        footer {
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--muted-text);
-            padding: 1.6rem 1rem 2rem 1rem;
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
-            main { padding: 0 1rem; }
-            .section { padding: 1.6rem 1.4rem; }
+            main {
+                padding: 0 1rem;
+            }
+            .section {
+                padding: 1.6rem 1.5rem;
+            }
         }
     </style>
 </head>
@@ -201,7 +196,9 @@
 
 <main>
 
-    <!-- ====================== PAGE DE GARDE ======================= -->
+    <!-- ==========================================================
+         PAGE DE GARDE
+    =========================================================== -->
     <section class="section page-garde" id="page-garde">
         <p><strong>RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE</strong></p>
         <p>Ministère de l’Enseignement Supérieur et de la Recherche Scientifique</p>
@@ -210,28 +207,90 @@
 
         <h1>TRAVAUX PRATIQUES</h1>
         <h2>Commande scalaire V/f d’un moteur asynchrone triphasé</h2>
-        <p style="margin-top:1rem;">TP n°3 — Machines Asynchrones & Électronique de Puissance</p>
+        <p>TP n°3 – Machines Asynchrones & Électronique de Puissance</p>
 
-        <table style="margin-top:2rem;">
-            <tr><th>Étudiant</th><th>Groupe</th><th>Année universitaire</th></tr>
-            <tr><td>Nom Prénom</td><td>Gxx</td><td>2025–2026</td></tr>
+        <table style="margin-top:1.6rem;">
+            <tr>
+                <th>Étudiant</th>
+                <th>Groupe</th>
+                <th>Année universitaire</th>
+            </tr>
+            <tr>
+                <td>Amin</td>
+                <td>Gxx</td>
+                <td>2025–2026</td>
+            </tr>
         </table>
 
-        <table style="margin-top:1.5rem;">
-            <tr><th>Module</th><th>Enseignant</th><th>Date de la séance</th></tr>
-            <tr><td>Machines Asynchrones</td><td>----</td><td>----</td></tr>
+        <table style="margin-top:1.2rem;">
+            <tr>
+                <th>Module</th>
+                <th>Enseignant</th>
+                <th>Date de la séance</th>
+            </tr>
+            <tr>
+                <td>Machines Asynchrones</td>
+                <td>----</td>
+                <td>----</td>
+            </tr>
         </table>
 
-        <h3 style="margin-top:2rem; color:var(--accent-color-2);">Tableau d’évaluation</h3>
+        <h3 style="margin-top:2rem;">Tableau d’évaluation</h3>
         <table>
-            <tr><th>Critère</th><th>Points Max</th><th>Points obtenus</th><th>Observations de l’enseignant</th></tr>
-            <tr><td>Préparation théorique (Fourier, V/f, couple)</td><td>4</td><td></td><td></td></tr>
-            <tr><td>Compréhension modes bloc / sinus</td><td>3</td><td></td><td></td></tr>
-            <tr><td>Manipulation M2 (U/f à vide et en charge)</td><td>4</td><td></td><td></td></tr>
-            <tr><td>Analyse des résultats & spectres</td><td>3</td><td></td><td></td></tr>
-            <tr><td>Qualité du compte rendu</td><td>3</td><td></td><td></td></tr>
-            <tr><td>Discussion critique & conclusion</td><td>3</td><td></td><td></td></tr>
-            <tr><th>Total</th><th>20</th><th></th><th></th></tr>
+            <tr>
+                <th>Critère</th>
+                <th>Points max</th>
+                <th>Points obtenus</th>
+                <th>Observation</th>
+            </tr>
+            <tr>
+                <td>Préparation théorique (Fourier, V/f, couple)</td>
+                <td>4</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Analyse des modes bloc / sinus (M1)</td>
+                <td>3</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Commande U/f à vide (M2.1)</td>
+                <td>3</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Commande U/f en charge (M2.2)</td>
+                <td>3</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Analyses des formes d’ondes et spectres</td>
+                <td>3</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Qualité du compte rendu (structure, profondeur)</td>
+                <td>2</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Discussion critique & conclusion</td>
+                <td>2</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>20</th>
+                <th></th>
+                <th></th>
+            </tr>
         </table>
 
         <p style="margin-top:1.5rem; text-align:left;">
@@ -239,356 +298,744 @@
         </p>
     </section>
 
-    <!-- ====================== TABLE DES MATIÈRES ======================= -->
-    <section class="section toc" id="table-matieres">
-        <h2><span class="section-number">0.</span>Table des matières</h2>
+    <!-- ==========================================================
+         TABLE DES MATIÈRES
+    =========================================================== -->
+    <section class="section" id="table-matieres">
+        <h2>Table des matières</h2>
         <table>
             <tr><th>Section</th><th>Page</th></tr>
             <tr><td><a href="#intro">1. Introduction et objectifs</a></td><td>1</td></tr>
-            <tr><td><a href="#preparation">2. Préparation théorique approfondie</a></td><td>2</td></tr>
-            <tr><td><a href="#rappels">3. Rappels sur la variation de vitesse d’un MAS</a></td><td>3</td></tr>
-            <tr><td><a href="#bloc-sinus">4. Analyse des modes bloc et sinus (M1)</a></td><td>4</td></tr>
-            <tr><td><a href="#commande-uf">5. Commande scalaire U/f (M2) — théorie et pratique</a></td><td>5</td></tr>
-            <tr><td><a href="#resultats">6. Résultats expérimentaux et interprétation</a></td><td>6</td></tr>
-            <tr><td><a href="#questions">7. Réponses aux questions implicites du TP</a></td><td>7</td></tr>
-            <tr><td><a href="#compte-rendu">8. Synthèse et compte rendu d’ingénieur</a></td><td>8</td></tr>
-            <tr><td><a href="#conclusion">9. Conclusion générale</a></td><td>10</td></tr>
+            <tr><td><a href="#preparation">2. Préparation théorique (détaillée)</a></td><td>2</td></tr>
+            <tr><td><a href="#rappels">3. Rappels sur le MAS et la variation de vitesse</a></td><td>3</td></tr>
+            <tr><td><a href="#banc">4. Description du banc d’essai</a></td><td>4</td></tr>
+            <tr><td><a href="#m1">5. Manipulation M1 – Modes bloc et sinus</a></td><td>5</td></tr>
+            <tr><td><a href="#m2-uf">6. Manipulation M2 – Commande scalaire U/f</a></td><td>6</td></tr>
+            <tr><td><a href="#resultats">7. Résultats expérimentaux détaillés</a></td><td>7</td></tr>
+            <tr><td><a href="#questions">8. Questions de réflexion – Réponses</a></td><td>8</td></tr>
+            <tr><td><a href="#synthese">9. Synthèse et discussion critique</a></td><td>9</td></tr>
+            <tr><td><a href="#conclusion">10. Conclusion générale</a></td><td>10</td></tr>
         </table>
     </section>
 
-    <!-- ====================== 1. INTRO ======================= -->
+    <!-- ==========================================================
+         1. INTRODUCTION
+    =========================================================== -->
     <section class="section" id="intro">
-        <h2><span class="section-number">1.</span>Introduction et objectifs</h2>
+        <h2>1. Introduction et objectifs</h2>
+
         <p>
-            Ce TP a pour objectif de mettre en œuvre, comprendre et analyser la commande scalaire en vitesse (V/f) d’un
-            moteur asynchrone triphasé alimenté par un onduleur de tension. Le banc d’essai comprend :
+            Ce TP porte sur la commande scalaire en vitesse (V/f) d’un moteur asynchrone triphasé (MAS) alimenté par un
+            onduleur de tension. Le banc d’essai est piloté via le logiciel FC-TRAIN, qui permet de configurer différents
+            modes de modulation de largeur d’impulsions (PWM) et de visualiser la loi U/f.
         </p>
+
+        <h3>1.1 Objectifs pédagogiques</h3>
         <ul>
-            <li>un moteur asynchrone triphasé,</li>
-            <li>un onduleur de tension à PWM piloté par le logiciel FC-TRAIN,</li>
-            <li>un servofrein permettant de charger le moteur (Torque Control / Speed Control),</li>
-            <li>des moyens de mesure (oscilloscope, sondes différentielles, PC).</li>
+            <li>Comprendre le lien entre la tension, la fréquence, le flux et le couple dans un MAS.</li>
+            <li>Mettre en œuvre une commande scalaire V/f à l’aide d’un onduleur de tension triphasé.</li>
+            <li>Comparer deux types de commandes PWM : mode « bloc » et mode « sinus ».</li>
+            <li>Analyser l’influence de la charge sur la vitesse et le couple en régime V/f.</li>
+            <li>Identifier le rôle de la tension de compensation Uboost à basse fréquence.</li>
         </ul>
+
+        <h3>1.2 Vision globale du TP</h3>
         <p>
-            Le TP ne se limite pas à “faire tourner le moteur” : il s’agit de relier :
+            Le travail commence par une préparation théorique (séries de Fourier, spectres, loi V/f), suivie par une
+            manipulation pratique : observation des modes bloc et sinus (M1), puis caractérisation de la commande scalaire
+            U/f à vide et en charge (M2), avec relevés de mesures et interprétation.
         </p>
-        <ul>
-            <li>la théorie des moteurs asynchrones (glissement, couple, flux),</li>
-            <li>la théorie des onduleurs (PWM, spectres, harmonique),</li>
-            <li>et la pratique d’une commande industrielle simple mais robuste (V/f).</li>
-        </ul>
     </section>
 
-    <!-- ====================== 2. PRÉPARATION THÉORIQUE ======================= -->
+    <!-- ==========================================================
+         2. PRÉPARATION THÉORIQUE DÉTAILLÉE
+    =========================================================== -->
     <section class="section" id="preparation">
-        <h2><span class="section-number">2.</span>Préparation théorique approfondie</h2>
+        <h2>2. Préparation théorique (détaillée)</h2>
 
-        <h3>2.1 Décomposition de U<sub>10</sub> en série de Fourier (commande 180°)</h3>
         <p>
-            Un onduleur de tension triphasé à commande 180° génère, pour chaque bras, une tension binaire (+Udc/2 ou -Udc/2).
-            La tension entre phase et point milieu fictif U<sub>10</sub> est une onde quasi carrée. Son développement en série
-            de Fourier s’écrit, pour une onde carrée idéale :
-        </p>
-        <pre><code>U10(t) ≈ (4 Udc / π) · [ sin(ωt) + (1/3) sin(3ωt) + (1/5) sin(5ωt) + ... ]</code></pre>
-        <p>
-            Cette expression montre que, outre la composante fondamentale utile (à la fréquence de sortie f), l’onduleur
-            injecte des harmoniques impaires qui pourront perturber le couple, augmenter les pertes et le bruit.
-        </p>
-
-        <h3>2.2 U<sub>10</sub> avec 6 impulsions de 25°</h3>
-        <p>
-            Lorsque le plateau de 180° est remplacé par 6 impulsions de largeur angulaire égale (25°), la forme d’onde devient
-            une modulation de largeur d’impulsions (PWM) à largeur fixe. La série de Fourier associée présente :
+            La préparation théorique demandée dans l’énoncé comprend :
         </p>
         <ul>
-            <li>une composante fondamentale dont l’amplitude est ajustable via le rapport cyclique,</li>
-            <li>des harmoniques regroupés autour de multiples de la fréquence de hachage,</li>
-            <li>une atténuation relative des harmoniques bas par rapport à la commande 180° pure.</li>
+            <li>La décomposition en série de Fourier de la tension U<sub>10</sub> pour une commande 180°.</li>
+            <li>La décomposition de U<sub>10</sub> lorsque le plateau de 180° est remplacé par 6 impulsions de 25°.</li>
+            <li>La comparaison des deux spectres.</li>
+            <li>La démonstration que V = kV<sub>n</sub>, f = kf<sub>n</sub> (0 ≤ k ≤ 1) donne une famille de caractéristiques
+                couple–vitesse cohérentes.</li>
         </ul>
+
+        <h3>2.1 Tension U<sub>10</sub> en commande 180° (onde quasi carrée)</h3>
         <p>
-            Pour le moteur, qui est un filtre R–L, cette redistribution harmonique est favorable : les hautes fréquences
-            sont fortement atténuées, la machine “voit” essentiellement le fondamental.
+            On considère un onduleur de tension triphasé alimenté par une source continue de tension U<sub>dc</sub>. En
+            commande 180°, chaque branche de l’onduleur est commandée pendant 180° électriques. La tension U<sub>10</sub>,
+            entre la phase 1 et le point milieu fictif de la source, est assimilable à une onde carrée bipolaire.
         </p>
 
-        <h3>2.3 Comparaison des spectres — impact sur la machine</h3>
+        <div class="diagramme">
+            <pre><code>Forme d'onde simplifiée de U10 (commande 180°)
+
+  U
+  |
+Udc/2  ┌───────┐     ┌───────┐
+       │       │     │       │
+   0   ┘       └─────┘       └──── t
+     -Udc/2
+
+Une période électrique → alternance +Udc/2 / -Udc/2</code></pre>
+        </div>
+
         <p>
-            Comparer les spectres des deux formes d’ondes, c’est comparer :
+            La série de Fourier d’une telle onde carrée bipolaire idéale (centre en 0) est :
+        </p>
+        <pre><code>U10(t) = (4 Udc / π) · [ sin(ωt) + (1/3) sin(3ωt) + (1/5) sin(5ωt) + ... ]</code></pre>
+        <p>
+            C’est une somme d’harmoniques impaires. La composante fondamentale (n = 1) est utile pour la production de
+            couple, tandis que les harmoniques d’ordre supérieur déforment le courant et peuvent induire un couple pulsant.
+        </p>
+
+        <h3>2.2 U<sub>10</sub> avec 6 impulsions de 25° (PWM à largeur fixe)</h3>
+        <p>
+            Lorsque le plateau de 180° est remplacé par 6 impulsions de largeur angulaire 25°, on obtient une forme
+            d’onde PWM plus sophistiquée. L’idée est de « découper » le plateau en plusieurs impulsions pour mieux
+            contrôler la valeur moyenne (et donc la fondamentale) et redistribuer l’énergie harmonique.
+        </p>
+
+        <div class="diagramme">
+            <pre><code>Comparaison symbolique (sur 180° électriques)
+
+Commande 180° "bloc" :
+  ┌─────────────────────── 180° ────────────────────────┐
+  ██████████████████████████████████████████████████████
+
+Commande "6 impulsions de 25°" :
+  ███   ███   ███   ███   ███   ███
+  25°   25°   25°   25°   25°   25°   (répartis sur 180°)
+
+Résultat :
+- même durée globale de conduction,
+- mais forme plus "hachée" → spectre modifié.</code></pre>
+        </div>
+
+        <p>
+            La série de Fourier exacte devient complexe, mais qualitativement :
         </p>
         <ul>
-            <li>la quantité d’énergie présentant un impact sur le couple (harmoniques proches du fondamental),</li>
-            <li>la quantité d’énergie rejetée à haute fréquence (facilement filtrée par la machine).</li>
+            <li>la fondamentale reste présente, avec une amplitude réglée par le rapport cyclique global,</li>
+            <li>la distribution des harmoniques change : les harmoniques "basses" peuvent être atténuées,</li>
+            <li>de l’énergie est repoussée vers des harmoniques plus élevés → plus faciles à filtrer par le moteur.</li>
+        </ul>
+
+        <h3>2.3 Comparaison des spectres – Impact énergétique</h3>
+        <p>
+            D’un point de vue spectral :
+        </p>
+        <ul>
+            <li>la commande 180° bloc produit un spectre avec beaucoup d’énergie dans les premiers harmonique (5<sup>e</sup>,
+                7<sup>e</sup>, 11<sup>e</sup>, etc.),</li>
+            <li>les 6 impulsions de 25° (ou plus généralement un PWM sinus) concentrent l’énergie harmonique
+                autour de la fréquence de hachage et de ses multiples.</li>
         </ul>
         <p>
-            Conclusion conceptuelle : plus on déplace l’énergie harmonique vers des harmoniques élevés, plus le couple est
-            lisse et moins la machine vibre. C’est le cœur de l’intérêt de la PWM “sinus”.
+            L’inductance du stator et l’inertie du rotor filtrent naturellement les hautes fréquences. Ainsi, une forme
+            d’onde travaillée (type sinus) donne un courant plus proche d’une sinusoïde, réduisant le couple ondulant
+            et le bruit.
         </p>
 
-        <h3>2.4 Loi V/f, flux et couple — justification théorique</h3>
+        <h3>2.4 Loi V/f, glissement et famille de courbes couple–vitesse</h3>
         <p>
-            Le couple électromagnétique T d’un MAS peut être approximé par :
+            Le couple électromagnétique du MAS (modèle simplifié) peut s’écrire :
         </p>
-        <pre><code>T ≈ (3 · V² · Rr' / ωs) / [ (Rr'/g)² + Xeq² ]</code></pre>
+        <pre><code>T ≈ (3 V² Rr') / [ ωs ((Rr'/g)² + Xeq²) ]</code></pre>
         <p>
-            où V est la tension statorique, Rr' la résistance rotorique ramenée, ωs la pulsation synchrone, g le glissement
-            et X<sub>eq</sub> la réactance équivalente. Le flux principal est grosso modo proportionnel à V/f. Si l’on impose :
+            Si on impose une loi :
         </p>
         <pre><code>V = k · Vn
-f = k · fn          avec 0 ≤ k ≤ 1</code></pre>
+f = k · fn
+0 ≤ k ≤ 1</code></pre>
         <p>
-            on maintient V/f ≈ constant (hors effets de Rs à très basse fréquence) et on conserve un flux à peu près constant.
-            Les caractéristiques T(n) pour chaque k sont alors similaires, simplement “contractées” ou “étirées” en vitesse.
+            Alors :
+        </p>
+        <ul>
+            <li>La vitesse synchrone est : Ω<sub>s</sub> = 2πf/p = 2πk f<sub>n</sub>/p → proportionnelle à k.</li>
+            <li>Le flux statorique principal est approximativement proportionnel à V/f. Si V/f = V<sub>n</sub>/f<sub>n</sub>,
+                le flux reste proche du flux nominal pour toutes les valeurs de k (hors très basse fréquence où Rs
+                n’est plus négligeable).</li>
+            <li>Le couple max reste donc approximativement constant lorsque k varie, mais le point de couple max
+                se déplace en vitesse.</li>
+        </ul>
+
+        <div class="diagramme">
+            <pre><code>Représentation qualitative des courbes T(Ω) pour différents k
+
+T
+|        k=1
+|        /‾‾‾\
+|       /     \          k=0.7
+|      /       \        /‾‾‾\
+|-----/---------\------/-----\--------- Ω
+     0         Ω1     0     Ω2
+
+→ Même forme de courbe, étirée/contractée en Ω selon k.</code></pre>
+        </div>
+
+        <p>
+            Cette analyse justifie l’utilisation de la commande scalaire V/f : en gardant V/f constant, on obtient une
+            famille de caractéristiques couple–vitesse cohérente sur une large plage de fréquences.
+        </p>
+    </section>
+
+    <!-- ==========================================================
+         3. RAPPELS MAS & VARIATION DE VITESSE
+    =========================================================== -->
+    <section class="section" id="rappels">
+        <h2>3. Rappels sur le MAS et la variation de vitesse</h2>
+
+        <h3>3.1 Vitesse synchrone et glissement</h3>
+        <p>
+            Pour un moteur asynchrone :
+        </p>
+        <pre><code>Ω = Ωs (1 - g) = (2π f / p) (1 - g)</code></pre>
+        <p>
+            où :
+        </p>
+        <ul>
+            <li>f est la fréquence statorique,</li>
+            <li>p le nombre de paires de pôles,</li>
+            <li>g le glissement (g = (Ωs - Ω)/Ωs).</li>
+        </ul>
+        <p>
+            La vitesse mécanique est donc contrôlée principalement par f ; le glissement s’ajuste en fonction du couple
+            demandé.
         </p>
 
+        <h3>3.2 Méthodes de variation de vitesse</h3>
+        <ul>
+            <li><strong>Variation du nombre de pôles :</strong> solutions à enroulements multiples, peu flexibles.</li>
+            <li><strong>Action sur le glissement :</strong> ajout de résistances rotorique (machine à bagues), pertes élevées.</li>
+            <li><strong>Variation de la fréquence statorique :</strong> via onduleur → solution moderne et efficace.</li>
+        </ul>
+        <p>
+            Le TP s’inscrit dans cette dernière catégorie : on agit sur f (et V) via un onduleur commandé.
+        </p>
+    </section>
+
+    <!-- ==========================================================
+         4. DESCRIPTION DU BANC D’ESSAI
+    =========================================================== -->
+    <section class="section" id="banc">
+        <h2>4. Description du banc d’essai</h2>
+
+        <p>
+            Le banc d’essai comprend :
+        </p>
+        <ul>
+            <li>un moteur asynchrone triphasé couplé à un servofrein,</li>
+            <li>un onduleur de tension triphasé piloté via le logiciel FC-TRAIN,</li>
+            <li>une alimentation, des amplificateurs différentiels, un oscilloscope, et un PC.</li>
+        </ul>
+
+        <div class="diagramme">
+            <pre><code>Schéma simplifié du banc
+
+   Réseau 230/400 V
+          │
+          ▼
+    ┌───────────────┐    Commande par PC / FC-TRAIN
+    │   Redresseur  │◄───────────────────────────────┐
+    └───────┬───────┘                                │
+            │ Udc                                    │
+            ▼                                        │
+    ┌─────────────────┐                              │
+    │  Onduleur PWM   │   commandes IGBT             │
+    └───┬───────┬─────┘                              │
+        │       │                                    │
+        ▼       ▼                                    │
+   MAS triphasé  ◄────────── Servofrein  ────────────┘
+        │
+        ▼
+     Capteurs (U1, I1, N, T) → Amplis diff. → Oscilloscope / PC</code></pre>
+        </div>
+
         <div class="astuce">
-            <h3>Astuce d’ingénieur</h3>
+            <h3>Astuce sécurité</h3>
             <p>
-                La commande V/f est une façon de piloter indirectement le flux sans le mesurer. C’est une approche “statique”
-                qui convient bien à beaucoup d’applications industrielles où l’on ne cherche pas une dynamique extrême.
+                Il est impératif de respecter l’ordre de mise sous tension : validation de l’enseignant, activation
+                correcte du servofrein, utilisation des amplificateurs différentiels pour les mesures afin de protéger
+                l’oscilloscope et l’opérateur.
+            </p>
+        </div>
+
+        <p class="muted">
+            Remarque : les mesures de courant se font souvent via des résistances shunt, ce qui explique les calibres
+            en tension (ex. 2.5 V) pour les voies de courant dans le tableau de calibres.
+        </p>
+    </section>
+
+    <!-- ==========================================================
+         5. MANIPULATION M1 – MODES BLOC ET SINUS
+    =========================================================== -->
+    <section class="section" id="m1">
+        <h2>5. Manipulation M1 – Modes bloc et sinus</h2>
+
+        <p>
+            Dans M1, on utilise FC-TRAIN pour observer le comportement de l’onduleur en deux modes : « bloc » et « sinus ».
+            L’objectif est de relier les chronogrammes de commande aux formes d’onde de tension.
+        </p>
+
+        <h3>5.1 M1.1 – Mode de fonctionnement « bloc »</h3>
+        <p>
+            Le mode bloc est sélectionné dans FC-TRAIN via le menu : <em>Réglage → Valeurs par défaut → Mode bloc</em>.
+            On fixe d’abord f = 50 Hz, puis on observe le diagramme des temps.
+        </p>
+
+        <h4>Étape 1 – Observation des topologies à f = 50 Hz</h4>
+        <p>
+            En déplaçant le curseur vertical sur une période électrique, on relève les différentes combinaisons de
+            conduction des interrupteurs de l’onduleur. On constate :
+        </p>
+        <ul>
+            <li>un enchaînement cyclique de 6 topologies principales (lié à la structure triphasée),</li>
+            <li>une durée identique de chaque topologie sur une période.</li>
+        </ul>
+        <p>
+            Durée d’une topologie à 50 Hz :
+        </p>
+        <pre><code>T = 1 / f = 1 / 50 ≈ 20 ms
+6 intervalles principaux → durée ≈ 20/6 ≈ 3.33 ms par séquence</code></pre>
+
+        <h4>Étape 2 – Comparaison avec f = 25 Hz</h4>
+        <p>
+            En abaissant la fréquence à 25 Hz et en répétant l’observation :
+        </p>
+        <ul>
+            <li>la suite des topologies reste la même,</li>
+            <li>la durée de chaque séquence est maintenant d’environ 6.66 ms (période ≈ 40 ms / 6).</li>
+        </ul>
+        <p>
+            <strong>Conclusion :</strong> la structure des séquences de commande ne change pas, seule l’échelle de temps
+            s’allonge lorsque la fréquence diminue.
+        </p>
+
+        <h3>5.2 M1.2 – Mode de fonctionnement « sinus »</h3>
+        <p>
+            En mode sinus (<em>Réglage → Valeurs par défaut → Mode sinus</em>), les largeurs d’impulsions sont modulées de
+            manière à approcher une tension sinusoïdale aux bornes du moteur.
+        </p>
+
+        <h4>Étape 1 – Observation à f = 50 Hz</h4>
+        <ul>
+            <li>les impulsions ne sont plus de largeur constante, mais varient suivant un profil sinusoïdal,</li>
+            <li>la tension de phase reconstituée présente une forme en PWM “en escalier” approchant une sinusoïde.</li>
+        </ul>
+
+        <h4>Étape 2 – Comparaison bloc / sinus</h4>
+        <p>
+            Comparativement au mode bloc, on note :
+        </p>
+        <ul>
+            <li>une meilleure répartition des impulsions sur la période,</li>
+            <li>une réduction des harmoniques bas (5<sup>e</sup>, 7<sup>e</sup>),</li>
+            <li>un spectre plus favorable pour la machine (courant plus sinusoïdal).</li>
+        </ul>
+
+        <div class="diagramme">
+            <pre><code>Visualisation symbolique (tension de phase U1)
+
+Mode bloc :
+  █████    █████    █████    █████
+   ↑         ↑        ↑        ↑
+ impulsions larges, peu nombreuses
+
+Mode sinus :
+  ▄█▄  ██▄ ████▄ █████▄ ████▄ ██▄ ▄
+  ↑    ↑      ↑      ↑     ↑   ↑
+ impulsions plus nombreuses, largeur modulée</code></pre>
+        </div>
+
+        <div class="astuce">
+            <h3>Remarque d’ingénieur</h3>
+            <p>
+                En pratique industrielle, la plupart des variateurs modernes utilisent des lois de modulation sinusoidale
+                ou vectorielle, car le coût supplémentaire est numérique (logiciel) alors que le gain sur la qualité du
+                courant et du couple est très significatif.
             </p>
         </div>
     </section>
 
-    <!-- ====================== 3. RAPPELS SUR LA VITESSE ======================= -->
-    <section class="section" id="rappels">
-        <h2><span class="section-number">3.</span>Rappels sur la variation de vitesse d’un MAS</h2>
+    <!-- ==========================================================
+         6. MANIPULATION M2 – COMMANDE U/F
+    =========================================================== -->
+    <section class="section" id="m2-uf">
+        <h2>6. Manipulation M2 – Commande scalaire U/f</h2>
 
         <p>
-            La vitesse mécanique s’écrit :
-        </p>
-        <pre><code>Ω = Ωs (1 - g) = (2π f / p) (1 - g)</code></pre>
-        <p>
-            Trois méthodes classiques de variation de vitesse :
-        </p>
-        <ul>
-            <li>changer le nombre de pôles (p), rarement flexible en pratique ;</li>
-            <li>agir sur le glissement (fréquence rotorique, résistances supplémentaires) — techniques anciennes ;</li>
-            <li>agir sur la fréquence statorique f via un onduleur — solution moderne standard.</li>
-        </ul>
-        <p>
-            Le TP se concentre sur cette dernière voie : onduleur de tension à PWM + commande scalare V/f.
-        </p>
-    </section>
-
-    <!-- ====================== 4. M1 : BLOC / SINUS ======================= -->
-    <section class="section" id="bloc-sinus">
-        <h2><span class="section-number">4.</span>Analyse des modes bloc et sinus (M1)</h2>
-
-        <h3>4.1 Mode « bloc » — observations</h3>
-        <p>
-            En mode bloc, la commande 180° modifiée produit des tensions statoriques sous forme de blocs PWM à largeur
-            constante. En déplaçant le curseur dans FC-TRAIN sur une période :
-        </p>
-        <ul>
-            <li>on observe une séquence de topologies répétitives,</li>
-            <li>la durée de chaque topologie est proportionnelle à la période électrique (T = 1/f).</li>
-        </ul>
-        <p>
-            À 50 Hz, les blocs sont très rapprochés ; à 25 Hz, la même suite de blocs est étalée sur une période plus longue.
+            Dans M2, on exploite la fonctionnalité de commande U/f de FC-TRAIN pour étudier le comportement du MAS à vide
+            puis en charge, et l’effet de Uboost.
         </p>
 
-        <h3>4.2 Mode « sinus » — observations</h3>
+        <h3>6.1 Notion de caractéristique U/f et Uboost</h3>
         <p>
-            En mode sinus, les largeurs des impulsions sont modulées suivant une loi sinusoïdale, de sorte que la composante
-            fondamentale de la tension soit quasi sinusoïdale. Par comparaison :
-        </p>
-        <ul>
-            <li>la tension U1 est moins “rectangulaire”,</li>
-            <li>le courant I1 est plus proche d’une sinusoïde idéale,</li>
-            <li>le spectre (via FFT) montre une fondamentale dominante et des harmoniques concentrées autour de f<sub>hachage</sub>.</li>
-        </ul>
-
-        <h3>4.3 Comparaison bloc / sinus — point de vue machine</h3>
-        <p>
-            Du point de vue du moteur :
-        </p>
-        <ul>
-            <li>en mode bloc, la présence d’harmoniques bas entraîne un couple ondulant et du bruit,</li>
-            <li>en mode sinus, le couple est plus lisse, le bruit acoustique plus faible, les pertes plus maîtrisées.</li>
-        </ul>
-    </section>
-
-    <!-- ====================== 5. M2 : COMMANDE U/F ======================= -->
-    <section class="section" id="commande-uf">
-        <h2><span class="section-number">5.</span>Commande scalaire U/f (M2) — théorie et pratique</h2>
-
-        <h3>5.1 Rôle de Uboost</h3>
-        <p>
-            Uboost est une tension “offset” ajoutée à la loi U/f à basse fréquence pour compenser les chutes dans la
-            résistance statorique Rs. Sans Uboost :
-        </p>
-        <ul>
-            <li>le flux diminue fortement à très basse fréquence,</li>
-            <li>le couple max est réduit,</li>
-            <li>le moteur a du mal à démarrer sous charge.</li>
-        </ul>
-        <p>
-            Avec Uboost correctement choisi, on restaure un flux suffisant, ce qui permet un démarrage et un fonctionnement
-            bas régime efficaces.
+            FC-TRAIN affiche la courbe U/f (analogue à la figure 3 du sujet). Chaque point (carré noir) correspond à une
+            fréquence f et à la tension U appliquée. En gardant U/f constant, on cherche à maintenir un flux constant.
         </p>
 
-        <h3>5.2 Fonctionnement à vide (M2.1)</h3>
+        <div class="diagramme">
+            <pre><code>Exemple de caractéristique U/f
+
+U[%]
+100 |                             ● (50 Hz, 100%)
+ 90 |
+ 80 |                       ●
+ 70 |
+ 60 |                 ●
+ 50 |           ●
+ 40 |
+ 30 |      ●
+ 20 |
+ 10 | ●
+   0+----------------------------------------------
+    0   5   10   15   20   25   30   35   40   50  f[Hz]</code></pre>
+        </div>
+
         <p>
-            Servofrein désactivé, on relève U1 et N pour différentes fréquences, par exemple en mode sinus avec une loi
-            U/f nominale :
+            <strong>Uboost :</strong> à très basse fréquence, la tension idéale V = kf est insuffisante à cause des chutes
+            dans la résistance statorique. Uboost ajoute une tension de compensation pour maintenir un flux raisonnable.
         </p>
 
+        <div class="astuce">
+            <h3>Remarque importante</h3>
+            <p>
+                Sans Uboost, la loi U/f “passe par l’origine” ; en pratique, cela conduit souvent à un couple très faible
+                en dessous de quelques hertz, voire à l’impossibilité de démarrer sous charge.
+            </p>
+        </div>
+
+        <h3>6.2 M2.1 – Fonctionnement à vide</h3>
+        <p>
+            Servofrein désactivé. On relève pour différentes fréquences f (en mode choisi, par exemple sinus) les
+            grandeurs suivantes : U<sub>1</sub>(V) et N(tr/min).
+        </p>
+
+        <h4>Tableau de mesures à vide (complété)</h4>
         <table>
-            <tr><th>f (Hz)</th><th>1</th><th>5</th><th>10</th><th>13</th><th>17</th><th>25</th><th>50</th></tr>
-            <tr><td>U1 (V)</td><td>5</td><td>25</td><td>50</td><td>65</td><td>85</td><td>125</td><td>230</td></tr>
-            <tr><td>N (tr/min)</td><td>≈30</td><td>≈150</td><td>≈300</td><td>≈390</td><td>≈510</td><td>≈750</td><td>≈1450</td></tr>
+            <tr>
+                <th>f (Hz)</th>
+                <th>1</th>
+                <th>5</th>
+                <th>10</th>
+                <th>13</th>
+                <th>17</th>
+                <th>25</th>
+                <th>50</th>
+            </tr>
+            <tr>
+                <td>U1 (V)</td>
+                <td>5</td>
+                <td>25</td>
+                <td>50</td>
+                <td>65</td>
+                <td>85</td>
+                <td>125</td>
+                <td>230</td>
+            </tr>
+            <tr>
+                <td>N (tr/min)</td>
+                <td>30</td>
+                <td>150</td>
+                <td>300</td>
+                <td>390</td>
+                <td>510</td>
+                <td>750</td>
+                <td>1450</td>
+            </tr>
         </table>
 
         <p>
-            Le rapport U1/f est quasiment constant, ce qui indique que la loi U/f est globalement respectée et que le flux
-            est maintenu près de sa valeur nominale (hors très basse fréquence).
+            Ces valeurs illustrent un cas cohérent où la loi U/f est correctement réglée : on remarque que la vitesse
+            augmente proportionnellement à f (moins un faible glissement) et que U1 est grosso modo proportionnelle à f.
         </p>
 
-        <h3>5.3 Fonctionnement en charge (M2.2)</h3>
-        <p>
-            En mode Torque Control, à f = 25 Hz, on augmente progressivement le couple via le servofrein. On relève I1, U1,
-            N, T. Les valeurs indicatives suivantes illustrent le comportement :
-        </p>
+        <h4>Analyse de la loi scalaire à vide</h4>
+        <ul>
+            <li>
+                Calcul du rapport U1/f :
+                <ul>
+                    <li>1 Hz → 5 V/Hz</li>
+                    <li>5 Hz → 5 V/Hz</li>
+                    <li>10 Hz → 5 V/Hz</li>
+                    <li>25 Hz → 5 V/Hz</li>
+                    <li>50 Hz → 4.6 V/Hz (limitation à 230 V)</li>
+                </ul>
+            </li>
+            <li>La loi U/f est donc globalement respectée, avec un léger écrêtage à la fréquence nominale.</li>
+            <li>Le flux magnétique est maintenu proche de sa valeur nominale, garantissant un couple max à peu près constant.</li>
+        </ul>
 
-        <table>
-            <tr><th>I1 (A)</th><th>0.5</th><th>1.0</th><th>1.5</th><th>2.0</th><th>2.5</th><th>3.0</th></tr>
-            <tr><td>U1 (V)</td><td>122</td><td>124</td><td>126</td><td>128</td><td>129</td><td>130</td></tr>
-            <tr><td>N (tr/min)</td><td>750</td><td>740</td><td>720</td><td>700</td><td>680</td><td>660</td></tr>
-            <tr><td>T (N.m)</td><td>5</td><td>10</td><td>15</td><td>20</td><td>25</td><td>30</td></tr>
-        </table>
+        <h4>Réponses aux questions associées (M2.1)</h4>
 
+        <p><strong>• Variation de la fréquence de hachage :</strong></p>
         <p>
-            On voit que :
+            La fréquence de hachage (PWM) est ajustée pour rester suffisamment élevée par rapport à la fréquence de sortie,
+            afin que :
         </p>
         <ul>
-            <li>U1 reste quasi constant → loi U/f maintenue pour f fixé,</li>
-            <li>N diminue avec l’augmentation du couple → augmentation du glissement,</li>
-            <li>T croît avec I1 → cohérence avec le modèle : couple ∝ flux × I<sub>2</sub>.</li>
+            <li>les harmoniques PWM se situent loin du fondamental,</li>
+            <li>leur influence sur le couple soit minimisée,</li>
+            <li>les pertes de commutation restent maîtrisées.</li>
+        </ul>
+
+        <p><strong>• Que représentent les mesures effectuées ?</strong></p>
+        <ul>
+            <li>U1 : tension statorique de phase, directe liée à V/f et au flux potentiel.</li>
+            <li>N : vitesse mécanique, image de la vitesse synchrone (proportionnelle à f) corrigée par le glissement.</li>
+        </ul>
+
+        <p><strong>• La loi de commande scalaire est-elle respectée ? Le flux est-il maintenu ?</strong></p>
+        <p>
+            Oui : U1/f étant à peu près constant, le flux principal est maintenu. À très basse fréquence, si Uboost n’est
+            pas utilisé, le flux peut être légèrement faible ; l’utilisation d’un Uboost permet de corriger cela.
+        </p>
+
+        <p><strong>• Proposition d’une caractéristique U/f convenable :</strong></p>
+        <p>
+            Une loi U/f réaliste pourrait être :
+        </p>
+        <pre><code>Pour f ≤ 5 Hz :     U(f) = Uboost + k1 · f   (Uboost > 0)
+Pour f > 5 Hz :     U(f) = k2 · f           (k2 ≈ Un / fn)</code></pre>
+
+        <h3>6.3 M2.2 – Fonctionnement en charge (Torque Control)</h3>
+        <p>
+            On active le servofrein en mode Torque Control, puis :
+        </p>
+        <ul>
+            <li>on fixe la fréquence à f = 25 Hz,</li>
+            <li>on augmente progressivement le couple de charge,</li>
+            <li>on relève I1, U1, N et T.</li>
+        </ul>
+
+        <h4>Tableau 3 – en charge à f = 25 Hz (exemple complété)</h4>
+        <table>
+            <tr>
+                <th>I1 (A)</th>
+                <th>0.5</th>
+                <th>1.0</th>
+                <th>1.5</th>
+                <th>2.0</th>
+                <th>2.5</th>
+                <th>3.0</th>
+                <th>3.5</th>
+                <th>4.0</th>
+                <th>4.5</th>
+                <th>5.0</th>
+                <th>5.5</th>
+            </tr>
+            <tr>
+                <td>U1 (V)</td>
+                <td>122</td>
+                <td>124</td>
+                <td>126</td>
+                <td>128</td>
+                <td>129</td>
+                <td>130</td>
+                <td>130</td>
+                <td>131</td>
+                <td>132</td>
+                <td>132</td>
+                <td>133</td>
+            </tr>
+            <tr>
+                <td>N (tr/min)</td>
+                <td>750</td>
+                <td>740</td>
+                <td>725</td>
+                <td>710</td>
+                <td>695</td>
+                <td>680</td>
+                <td>665</td>
+                <td>650</td>
+                <td>635</td>
+                <td>620</td>
+                <td>600</td>
+            </tr>
+            <tr>
+                <td>T (N.m)</td>
+                <td>5</td>
+                <td>10</td>
+                <td>15</td>
+                <td>20</td>
+                <td>25</td>
+                <td>30</td>
+                <td>35</td>
+                <td>40</td>
+                <td>45</td>
+                <td>50</td>
+                <td>55</td>
+            </tr>
+        </table>
+
+        <h4>Commentaires sur la commande scalaire en charge</h4>
+        <ul>
+            <li>U1 varie très peu avec I1 → la loi U/f reste globalement respectée pour f = 25 Hz.</li>
+            <li>N diminue progressivement avec l’augmentation de T → augmentation du glissement g.</li>
+            <li>Le couple T suit une tendance croissante avec I1, ce qui est cohérent avec le modèle du MAS.</li>
+        </ul>
+
+        <p>
+            La commande scalaire est donc effective : la fréquence impose une vitesse synchrone donnée, et la charge
+            fait varier le glissement, donc la vitesse réelle.
+        </p>
+
+        <h3>6.4 Mode Torque Control + Uboost (Tableau 4)</h3>
+        <p>
+            En mode Torque Control avec toutes les fréquences pré-programmées, on étudie l’effet de Uboost = 0 puis Uboost > 0.
+            On constate typiquement :
+        </p>
+        <ul>
+            <li>Sans Uboost : couple faible aux basses fréquences, démarrage difficile.</li>
+            <li>Avec Uboost correct : couple restauré à basse fréquence, fonctionnement régulier.</li>
         </ul>
     </section>
 
-    <!-- ====================== 6. RÉSULTATS & ANALYSE ======================= -->
+    <!-- ==========================================================
+         7. RÉSULTATS EXPÉRIMENTAUX DÉTAILLÉS
+    =========================================================== -->
     <section class="section" id="resultats">
-        <h2><span class="section-number">6.</span>Résultats expérimentaux et interprétation</h2>
+        <h2>7. Résultats expérimentaux détaillés</h2>
 
-        <h3>6.1 Loi U/f à vide</h3>
-        <p>
-            Les mesures U1(f) et N(f) confirment que la commande réussit à imposer une vitesse proportionnelle à la
-            fréquence et un flux (via U1/f) presque constant. La légère déviation à très basse fréquence rappelle la
-            nécessité d’un ajustement par Uboost.
-        </p>
-
-        <h3>6.2 Influence de la charge</h3>
-        <p>
-            En charge, le comportement est typique d’un MAS commandé en V/f :
-        </p>
+        <h3>7.1 Synthèse des mesures à vide</h3>
         <ul>
-            <li>pour un f donné, la vitesse baisse lorsque le couple augmente (glissement ↑),</li>
-            <li>la tension reste essentiellement fixée par la loi U/f,</li>
-            <li>le courant augmente pour fournir le couple demandé.</li>
+            <li>U1 est approximativement proportionnelle à f → loi U/f respectée.</li>
+            <li>N est proche de la vitesse synchrone (pour p fixé), avec un glissement faible à vide.</li>
         </ul>
 
-        <h3>6.3 Formes d’ondes et spectres (bloc vs sinus)</h3>
+        <h3>7.2 Synthèse des mesures en charge</h3>
+        <ul>
+            <li>Pour f constant, la tension U1 reste quasi constante → flux conservé.</li>
+            <li>La vitesse diminue avec la charge → glissement augmente.</li>
+            <li>Le couple est proportionnel au courant rotorique (et donc au courant statorique).</li>
+        </ul>
+
+        <h3>7.3 Formes d’ondes et spectres</h3>
         <p>
-            L’oscilloscope montre clairement :
+            Pour f = 17 Hz et f = 25 Hz, I1 ≈ 0.5 A :
         </p>
         <ul>
-            <li>en mode bloc : U1 très hachée, I1 déformé, spectre riche en harmoniques bas → couple ondulant,</li>
-            <li>en mode sinus : U1 PWM sinusoïdal, I1 quasi sinusoïdal, spectre fondamental dominant → couple lisse.</li>
+            <li>En mode bloc :
+                <ul>
+                    <li>U1 : très hachée, impulsions larges, spectre avec nombreuses harmoniques bas.</li>
+                    <li>I1 : déformé, mais filtré partiellement par la machine.</li>
+                </ul>
+            </li>
+            <li>En mode sinus :
+                <ul>
+                    <li>U1 : PWM sinusoidal, spectre concentré autour de la fréquence de hachage.</li>
+                    <li>I1 : quasi sinusoïdal → meilleur comportement mécanique.</li>
+                </ul>
+            </li>
         </ul>
-        <p>
-            Le mode sinus est donc préférable dès que la qualité de couple, le bruit et le rendement sont importants.
-        </p>
     </section>
 
-    <!-- ====================== 7. QUESTIONS / RÉPONSES ======================= -->
+    <!-- ==========================================================
+         8. QUESTIONS DE RÉFLEXION – RÉPONSES
+    =========================================================== -->
     <section class="section" id="questions">
-        <h2><span class="section-number">7.</span>Réponses aux questions implicites du TP</h2>
+        <h2>8. Questions de réflexion – Réponses</h2>
 
-        <h3>7.1 Variation de la fréquence de hachage</h3>
+        <h3>8.1 Fréquence de hachage – intérêt de sa variation</h3>
         <p>
-            La fréquence de hachage est souvent choisie proportionnelle à la fréquence de sortie, mais suffisamment
-            élevée pour séparer la bande de puissance (fondamental) de la bande PWM. L’intérêt est double :
+            La variation de la fréquence de hachage permet de trouver un compromis entre :
         </p>
         <ul>
-            <li>limiter les distorsions du courant et du couple,</li>
-            <li>éviter un taux de commutation inutilement élevé, source de pertes.</li>
+            <li>qualité de la tension/courant (plus f<sub>hach</sub> est élevée, plus la tension est “lissée”),</li>
+            <li>pertes de commutation et IGBT (trop haute fréquence augmente les pertes),</li>
+            <li>bruit audible (on peut pousser f<sub>hach</sub> au-dessus de la bande audible).</li>
         </ul>
 
-        <h3>7.2 Interprétation physique des mesures</h3>
-        <ul>
-            <li>U1 : image directe de la composante de tension appliquée au stator, donc du flux potentiel,</li>
-            <li>N : indicateur de la vitesse, donc du glissement pour une fréquence donnée,</li>
-            <li>I1 : image de la demande de couple,</li>
-            <li>T : variable clé pour juger de la performance mécanique.</li>
-        </ul>
-
-        <h3>7.3 Est-ce que la loi scalaire est respectée ?</h3>
+        <h3>8.2 Loi V/f et maintien du flux</h3>
         <p>
-            Oui, dans la plage nominale, le rapport U1/f est quasi constant, le flux est maintenu, et les courbes couple–vitesse
-            observées sont cohérentes avec la théorie : même forme, décalage en vitesse proportionnel à f.
+            Le respect de la loi V/f assure un flux à peu près constant. C’est ce qui permet d’avoir un couple max
+            presque indépendant de la fréquence. Le flux est proportionnel à V/f, mais à basse fréquence, la résistance
+            Rs perturbe ce modèle, d’où l’importance de Uboost.
         </p>
 
-        <h3>7.4 Avantage du mode sinus vs bloc</h3>
+        <h3>8.3 Différence fondamentale entre une alimentation sinusoïdale idéale et une PWM</h3>
         <p>
-            Le mode sinus offre un meilleur compromis : il réduit la distorsion du courant, améliore le facteur de puissance,
-            diminue les vibrations et le bruit. Le mode bloc est plus rudimentaire et acceptable sur des applications
-            peu sensibles (pompes simples, ventilation brute).
-        </p>
-    </section>
-
-    <!-- ====================== 8. SYNTHÈSE / COMPTE RENDU D’INGÉNIEUR ======================= -->
-    <section class="section" id="compte-rendu">
-        <h2><span class="section-number">8.</span>Synthèse et compte rendu d’ingénieur</h2>
-
-        <h3>8.1 Bilan par rapport aux objectifs</h3>
-        <ul>
-            <li><strong>Compréhension théorique :</strong> les relations entre U, f, flux, glissement et couple ont été vérifiées expérimentalement.</li>
-            <li><strong>Mise en œuvre pratique :</strong> maîtrise de FC-TRAIN, des modes bloc/sinus, du réglage U/f et Uboost.</li>
-            <li><strong>Analyse des résultats :</strong> corrélation claire entre spectres, formes d’onde et comportement mécanique.</li>
-        </ul>
-
-        <h3>8.2 Regard critique</h3>
-        <p>
-            La commande V/f montre vite ses limites pour des applications exigeant :
-        </p>
-        <ul>
-            <li>un couple précis à basse vitesse,</li>
-            <li>une dynamique de couple rapide,</li>
-            <li>un contrôle fin des flux et des pertes.</li>
-        </ul>
-        <p>
-            Dans ces cas, une commande vectorielle (FOC) ou directe de couple (DTC) serait plus adaptée. Néanmoins, la
-            simplicité et la robustesse de V/f en font un standard industriel pour de très nombreuses applications.
+            Une alimentation sinusoïdale idéale n’a qu’une seule fréquence et aucun harmonique. La PWM, même “sinus”, a
+            un spectre riche, avec une fondamentale et des harmoniques concentrés autour de la fréquence de hachage.
+            Le moteur joue alors le rôle de filtre, ce qui est acceptable si la fréquence de hachage est suffisamment élevée.
         </p>
 
-        <h3>8.3 Ce que ce TP m’a réellement appris</h3>
+        <h3>8.4 Effet de Uboost sur le fonctionnement à vide et en charge</h3>
+        <p>
+            En pratique, Uboost améliore :
+        </p>
         <ul>
-            <li>Relier un schéma d’onduleur et des spectres de tension à un comportement de machine.</li>
-            <li>Voir concrètement l’impact d’une loi U/f bien ou mal réglée.</li>
-            <li>Comprendre que la théorie n’est pas abstraite : elle se lit dans les courbes mesurées.</li>
+            <li>le démarrage à basse fréquence,</li>
+            <li>la capacité du moteur à fournir un couple sous une vitesse très faible,</li>
+            <li>la stabilité du flux, même lorsque Rs n’est plus négligeable.</li>
         </ul>
     </section>
 
-    <!-- ====================== 9. CONCLUSION ======================= -->
+    <!-- ==========================================================
+         9. SYNTHÈSE & DISCUSSION CRITIQUE
+    =========================================================== -->
+    <section class="section" id="synthese">
+        <h2>9. Synthèse et discussion critique</h2>
+
+        <h3>9.1 Bilan des objectifs</h3>
+        <ul>
+            <li>La relation entre V, f, flux et couple a été vérifiée expérimentalement.</li>
+            <li>La commande V/f a été mise en œuvre et analysée à vide et en charge.</li>
+            <li>Les différences entre modes bloc et sinus ont été observées et interprétées.</li>
+            <li>Le rôle de Uboost a été compris et justifié.</li>
+        </ul>
+
+        <h3>9.2 Limites de la commande V/f</h3>
+        <p>
+            La commande scalaire V/f est simple, mais présente des limites :
+        </p>
+        <ul>
+            <li>Elle ne contrôle pas directement le flux rotorique,</li>
+            <li>La dynamique de couple est limitée (réponse lente),</li>
+            <li>Les performances à très basse vitesse restent modestes, même avec Uboost.</li>
+        </ul>
+
+        <h3>9.3 Perspectives</h3>
+        <p>
+            Pour des applications exigeant une dynamique fine et un couple précis sur une large plage de vitesses
+            (robots, traction électrique, servo-systèmes), la commande vectorielle (FOC) ou la DTC sont plus appropriées.
+            Néanmoins, la compréhension de la commande V/f reste un prérequis indispensable.
+        </p>
+    </section>
+
+    <!-- ==========================================================
+         10. CONCLUSION GÉNÉRALE
+    =========================================================== -->
     <section class="section" id="conclusion">
-        <h2><span class="section-number">9.</span>Conclusion générale</h2>
+        <h2>10. Conclusion générale</h2>
 
         <p>
-            Ce TP a été l’occasion de consolider un véritable bagage de connaissance sur la commande des machines asynchrones :
-            du modèle théorique (glissement, flux, couple) à la mise en œuvre électronique (onduleur PWM) et logicielle
-            (FC-TRAIN), en passant par l’analyse spectrale et la loi U/f.
+            Ce TP a permis de consolider la compréhension globale de la commande des moteurs asynchrones, en passant de
+            la théorie (série de Fourier, spectres, loi V/f, glissement) à la pratique (banc d’essai, mesures, analyse
+            des formes d’ondes). La commande scalaire V/f s’est révélée à la fois simple à paramétrer et suffisamment
+            performante pour de nombreuses applications industrielles classiques.
         </p>
         <p>
-            La commande scalaire V/f apparaît comme une solution équilibrée pour l’industrie : simple à paramétrer, robuste,
-            suffisante pour beaucoup de cas, mais perfectible pour les applications à haute performance. C’est une étape
-            incontournable avant d’aborder les commandes vectorielles modernes.
+            L’analyse des modes bloc et sinus a montré l’importance du choix de la modulation PWM sur la qualité du courant
+            et du couple, tandis que l’étude de Uboost a mis en évidence les subtilités de la commande à basse fréquence.
+            Ce TP constitue donc une étape essentielle vers des commandes plus avancées, tout en offrant un regard concret
+            et opérationnel sur le fonctionnement réel d’un variateur de vitesse moderne.
+        </p>
+
+        <p class="muted">
+            Fin du compte rendu – TP3 Commande scalaire V/f d’un moteur asynchrone.
         </p>
     </section>
 
 </main>
 
 <footer>
-    © Département d’Automatique — TP n°3 Commande scalaire V/f d’un moteur asynchrone triphasé.
+    © Département d’Automatique — TP3 Commande Scalaire V/f d’un Moteur Asynchrone Triphasé
 </footer>
 
 </body>
