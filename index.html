@@ -1031,6 +1031,212 @@ Pour f > 5 Hz :     U(f) = k2 · f           (k2 ≈ Un / fn)</code></pre>
             Fin du compte rendu – TP3 Commande scalaire V/f d’un moteur asynchrone.
         </p>
     </section>
+<section class="section" id="grand-compte-rendu">
+    <h2>11. Compte rendu global et approfondi</h2>
+
+    <p>
+        Ce TP sur la commande scalaire V/f d’un moteur asynchrone triphasé ne se limite pas à la simple
+        mise en marche d’un banc d’essai. Il représente une synthèse concrète de plusieurs domaines :
+        électrotechnique, électronique de puissance, théorie des systèmes, commande et instrumentation.
+        L’objectif de ce compte rendu est de dépasser la description expérimentale et de proposer une
+        lecture d’ingénieur, en reliant chaque observation à des concepts théoriques et à des enjeux
+        industriels réels.
+    </p>
+
+    <h3>11.1 Vision système : de la source à la charge mécanique</h3>
+    <p>
+        Le système étudié peut être vu comme une chaîne d’énergie complète :
+    </p>
+    <ul>
+        <li>conversion réseau AC → DC (redresseur),</li>
+        <li>conversion DC → AC modulée (onduleur PWM),</li>
+        <li>conversion électromagnétique (stator/rotor du MAS),</li>
+        <li>conversion électromécanique (couple → vitesse sur l’arbre),</li>
+        <li>conversion mécanique → thermique (pertes, échauffement),</li>
+        <li>et enfin retour d’informations via les capteurs (U, I, N, T) et l’oscilloscope.</li>
+    </ul>
+    <p>
+        Chaque étage a ses contraintes : pertes, harmonique, saturation, contraintes thermiques,
+        limitations de commutation, etc. La commande V/f vient alors se “poser” au milieu de cette
+        chaîne comme une stratégie simple pour coordonner la partie électronique et la machine.
+    </p>
+
+    <h3>11.2 Place de la commande V/f dans le paysage des commandes MAS</h3>
+    <p>
+        Historiquement, les commandes des MAS ont évolué :
+    </p>
+    <ul>
+        <li>commande directe par contacteurs (tout ou rien, aucune variation de vitesse),</li>
+        <li>variations de vitesse par résistances rotorique ou par changement de pôles,</li>
+        <li>variations de fréquence via onduleurs à thyristors puis IGBT, avec commande V/f,</li>
+        <li>commandes vectorielles (FOC), DTC, commandes prédictives, etc.</li>
+    </ul>
+    <p>
+        La commande V/f occupe une position intermédiaire : elle est beaucoup plus performante que les
+        anciennes techniques “analogiques” (résistances, changement de pôles), mais beaucoup plus simple
+        à réaliser et à paramétrer que la commande vectorielle. C’est pour cela qu’elle reste omniprésente
+        dans l’industrie, notamment pour les applications :
+    </p>
+    <ul>
+        <li>pompes, ventilateurs, compresseurs,</li>
+        <li>convoyeurs, ascenseurs simples,</li>
+        <li>machines de process où la dynamique n’a pas besoin d’être extrême.</li>
+    </ul>
+
+    <h3>11.3 Impact des formes d’ondes sur le comportement réel</h3>
+    <p>
+        Un point central de ce TP est la mise en évidence de l’impact des formes d’ondes de tension sur le
+        comportement réel du moteur. En particulier, la comparaison mode bloc / mode sinus montre
+        clairement que :
+    </p>
+    <ul>
+        <li>la tension de sortie de l’onduleur n’est jamais parfaite,</li>
+        <li>la machine joue un rôle de filtre (R–L–C complexe) qui “transforme” cette tension en courant,</li>
+        <li>c’est le courant, et non la tension, qui est le vecteur principal du couple.</li>
+    </ul>
+    <p>
+        En mode bloc, la présence d’harmoniques bas dans la tension se traduit par :
+    </p>
+    <ul>
+        <li>un courant déformé,</li>
+        <li>un couple pulsant, avec des oscillations visibles au niveau du servofrein,</li>
+        <li>un bruit acoustique plus élevé,</li>
+        <li>une augmentation des pertes dans le rotor et le stator.</li>
+    </ul>
+    <p>
+        En mode sinus, le courant devient beaucoup plus sinusoïdal, le couple est plus lisse, les vibrations
+        diminuent. On voit ici directement l’intérêt d’une commande plus sophistiquée au niveau PWM, même
+        si elle ne change pas fondamentalement la loi V/f.
+    </p>
+
+    <h3>11.4 Rôle critique de la basse fréquence et de Uboost</h3>
+    <p>
+        La basse fréquence est une zone “délicate” pour la commande V/f. Le modèle simplifié qui dit
+        “flux ∝ V/f” suppose implicitement que :
+    </p>
+    <ul>
+        <li>la résistance statorique Rs est négligeable devant la réactance Xs = 2πfL,</li>
+        <li>la saturation magnétique est modérée,</li>
+        <li>l’influence des pertes n’est pas dominante.</li>
+    </ul>
+    <p>
+        Or, à très basse fréquence (par exemple entre 1 et 5 Hz) :
+    </p>
+    <ul>
+        <li>Rs devient comparable à Xs,</li>
+        <li>la tension appliquée se “perd” en grande partie dans Rs,</li>
+        <li>le flux magnétique réel dans la machine est bien inférieur à celui prévu.</li>
+    </ul>
+    <p>
+        C’est exactement ce que Uboost cherche à compenser. En ajoutant une tension statique à faible fréquence,
+        le variateur “remonte” artificiellement la tension pour rétablir un flux correct. Ce TP montre que
+        sans Uboost, le moteur a beaucoup de mal à fournir du couple à basse vitesse, même si la loi V/f semble
+        théoriquement correcte.
+    </p>
+
+    <h3>11.5 Lecture fine des résultats à vide et en charge</h3>
+    <p>
+        Les tableaux de mesures à vide et en charge ne sont pas de simples valeurs numériques. Ils racontent
+        une histoire :
+    </p>
+    <ul>
+        <li>
+            À vide :
+            <ul>
+                <li>N suit presque parfaitement la vitesse synchrone → glissement faible,</li>
+                <li>U1 suit f → loi V/f respectée, flux maintenu,</li>
+                <li>la machine consomme principalement un courant magnétisant et des pertes.</li>
+            </ul>
+        </li>
+        <li>
+            En charge :
+            <ul>
+                <li>pour un f fixé, la tension U1 reste stable → contrôle en tension efficace,</li>
+                <li>la vitesse diminue avec le couple → glissement augmente,</li>
+                <li>le courant augmente, signe que la machine fournit plus de couple.</li>
+            </ul>
+        </li>
+    </ul>
+    <p>
+        L’étudiant qui se contente de remplir les tableaux sans analyser ces tendances passe à côté de l’essentiel :
+        c’est la cohérence globale des grandeurs entre elles (U1, N, I1, T) qui valide réellement la compréhension
+        du principe de la commande V/f.
+    </p>
+
+    <h3>11.6 Enjeux industriels : rendement, CEM, fiabilité</h3>
+    <p>
+        Dans un contexte industriel réel, la commande V/f ne se juge pas seulement sur la capacité à faire tourner
+        le moteur, mais aussi sur :
+    </p>
+    <ul>
+        <li>le rendement global du système (pertes moteur + onduleur),</li>
+        <li>la compatibilité électromagnétique (CEM) vis-à-vis du réseau et des autres équipements,</li>
+        <li>la fiabilité à long terme (échauffements, surintensités, surtensions transitoires).</li>
+    </ul>
+    <p>
+        Les formes d’ondes PWM génèrent des harmoniques qui peuvent provoquer des courants de roulement dans
+        les paliers, des surtensions aux bornes des enroulements (câbles longs) et des interférences avec
+        d’autres équipements sensibles. Les variateurs modernes intègrent donc des filtres, des rampes de
+        démarrage, des protections thermiques et des diagnostics avancés. Le TP ne couvre pas tous ces aspects,
+        mais il en représente le socle technique.
+    </p>
+
+    <h3>11.7 Lien avec les commandes avancées (FOC, DTC, etc.)</h3>
+    <p>
+        La FOC (Field-Oriented Control) et la DTC (Direct Torque Control) sont des méthodes où :
+    </p>
+    <ul>
+        <li>le flux et le couple sont des variables d’état explicitement contrôlées,</li>
+        <li>on utilise des transformations de Park/Clarke pour travailler dans un repère tournant,</li>
+        <li>la dynamique de couple est très rapide, comparable à celle d’un moteur à courant continu.</li>
+    </ul>
+    <p>
+        Pourtant, la base conceptuelle reste liée à ce que montre ce TP :
+    </p>
+    <ul>
+        <li>le flux dépend de V/f et des paramètres de la machine,</li>
+        <li>le couple dépend du flux et du courant rotorique (ou du courant q),</li>
+        <li>les spectres PWM et les onduleurs restent au cœur de la mise en œuvre.</li>
+    </ul>
+    <p>
+        Autrement dit, la commande V/f est une “version statique et simplifiée” de ce que feront plus tard
+        les commandes vectorielles avec une dynamique beaucoup plus élaborée.
+    </p>
+
+    <h3>11.8 Auto-évaluation et regard critique</h3>
+    <p>
+        Au terme de ce TP, plusieurs points méritent une auto-évaluation honnête :
+    </p>
+    <ul>
+        <li>Ai-je réellement compris le lien entre U1, f, flux et couple, ou simplement retenu une formule V/f ?</li>
+        <li>Ai-je observé les formes d’ondes en cherchant les détails (fronts, largeur d’impulsion, distorsion) ?</li>
+        <li>Ai-je su relier les mesures de N, I1, T à des phénomènes théoriques comme le glissement ?</li>
+        <li>Ai-je identifié les situations où la commande V/f atteint ses limites (basse fréquence, couple important) ?</li>
+    </ul>
+    <p>
+        La valeur de ce TP ne réside pas uniquement dans la note, mais dans le fait de disposer, à la fin, d’une
+        représentation mentale claire d’un variateur de vitesse industriel et de ses interactions avec un MAS réel.
+    </p>
+
+    <h3>11.9 Conclusion de ce compte rendu élargi</h3>
+    <p>
+        Ce compte rendu étendu montre que la commande V/f est un compromis extrêmement intéressant : elle permet
+        de moduler la vitesse d’un moteur asynchrone robustement et à coût raisonnable, sans plonger dans la
+        complexité des commandes vectorielles. En même temps, il révèle que les détails (formes d’ondes, spectres,
+        Uboost, glissement) ne sont pas des détails de “cours”, mais des éléments qui déterminent réellement :
+    </p>
+    <ul>
+        <li>la qualité du couple,</li>
+        <li>la durée de vie de la machine,</li>
+        <li>le confort acoustique,</li>
+        <li>et la performance énergétique du système.</li>
+    </ul>
+    <p>
+        En ce sens, ce TP ne se limite pas à “faire V/f” : il ouvre sur une compréhension globale des variateurs
+        de vitesse modernes, de leurs forces, de leurs limites et de leur place dans l’architecture industrielle.
+    </p>
+
+</section>
 
 </main>
 
